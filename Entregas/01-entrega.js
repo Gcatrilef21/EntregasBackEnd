@@ -1,13 +1,26 @@
 
-let num = 103;
+class ProductManger {
+    constructor (){
+        this.products=[{id:1}]
+    }
+
+    getProduct(){   
+        return this.products
+    }
+
+    addProduct(){
+       
+    }
 
 
-
-const suma = (numero) => {
-    let add = 4;
-    return num + add ;
+    getPrudctosById(id){
+        const idProduct = this.products.find(idProduct => idProduct.id === id)
+        return idProduct ? console.log(`Este es el ID del Producto ${idProduct}`) : console.error('Not Found ❌')
+    }
 }
 
-suma(5)
-console.log(num)
+const productManager = new ProductManger()
+
+productManager.getPrudctosById(1)
+productManager.getProduct()
 
