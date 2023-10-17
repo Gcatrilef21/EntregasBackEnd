@@ -1,26 +1,34 @@
 
 class ProductManger {
     constructor (){
-        this.products=[{id:1}]
+        this.products=[{code:4}]
     }
 
     getProduct(){   
-        return this.products
+        let prod = this.products
+        //return console.log(prod)
     }
 
-    addProduct(){
-       
-    }
+    /* addProduct(nombre, description, price, thumbnail, code, stock){
+
+        let code= 1
+        if(code)
+
+        
+    } */
 
 
-    getPrudctosById(id){
-        const idProduct = this.products.find(idProduct => idProduct.id === id)
-        return idProduct ? console.log(`Este es el ID del Producto ${idProduct}`) : console.error('Not Found ❌')
+    getProductById(code){
+        const idProduct = this.products.find(product => product.code === code)
+        //console.log(idProduct)
+        return idProduct 
+            ? console.log(`Este es el ID del Producto ${idProduct.code}`) 
+            : console.error('Not Found ❌')
     }
 }
 
 const productManager = new ProductManger()
 
-productManager.getPrudctosById(1)
+productManager.getProductById(4)
 productManager.getProduct()
 
