@@ -16,7 +16,6 @@ class ProductManger {
         if (this.products.length > 0) {
             code = this.products[this.products.length-1].code + 1 
         }else {
-            console.log(code)
             console.error('Producto & Code ya existen',)
         }
 
