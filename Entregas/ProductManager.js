@@ -1,46 +1,58 @@
-/* 
-✅ Formato del entregable =  ProductManager.js 
-*/
 
 const fs = require ('fs')
 
-
 class ProductManager{
     constructor(){
-        this.path = '/Archivo/archivo.txt'
+        this.path = '../Archivo/products.json'
     }
 
-/*   ⭕  Debe tener un método getProducts, el cual debe leer el archivo de productos y devolver todos los productos en formato de arreglo. */
-    getProducts(){    
-        let product = this.path
-        if(product){
-
+    static id = 0
+    
+    getProducts() { 
+        if(fs.existsSync(this.path)){
+            return JSON.parse(fs.readFileSync(this.path))
+        }else {
+            return []
         }
     }
 
-    /* ⭕ Debe tener un método addProduct el cual debe recibir un objeto con el formato previamente especificado, asignarle un id autoincrementable y guardarlo en el arreglo (recuerda siempre guardarlo como un array en el archivo). */
+    addProduct (title, description, price, code, thumbnail, stock) {
+        let products = this.getProducts()
 
-    addProduct(){
+        ProductManager.id++
+        
+        let newProduct = {
+            id: ProductManager.id,
+            title,
+            description,
+            price,
+            code,
+            thumbnail,
+            stock
+        }
 
-    }
+        let exist = products.find(prod => prod.code === code)
 
-    /*  ⭕Debe tener un método getProductById, el cual debe recibir un id, y tras leer el archivo, debe buscar el producto con el id especificado y devolverlo en formato objeto 
-    */
+        if(exist){
+            console.error(`Producto ya existe con el codigo ${code} en BBDD`)
+            return
+        }
+        products.push(newProduct)
+        
+        fs.writeFileSync(this.path, JSON.stringify(products,null,8))
 
-    getProductById(){
-
-    }
-
-
-    /* ⭕ .Debe tener un método updateProduct, el cual debe recibir el id del producto a actualizar, así también como el campo a actualizar (puede ser el objeto completo, como en una DB), y debe actualizar el producto que tenga ese id en el archivo. NO DEBE BORRARSE SU ID */ 
-
-    updateProduct(){
-
-    }
-
-
-    /* ⭕ .Debe tener un método deleteProduct, el cual debe recibir un id y debe eliminar el producto que tenga ese id en el archivo. */
-    deleteProduct(){
-
+        
     }
 }
+
+const product = new ProductManager
+
+
+product.addProduct('Feta','es un queso Turco',200,'asd123','img',10)
+//product.addProduct('Stilton','es un queso Ingles',5990,'qwe123','img',8)
+product.addProduct('Camembert', 'es un queso de origen francés',7557, 'zxc3211', 'img', 231 )
+product.addProduct('Maasdam', 'es un queso de origen suizo-holandés',10990, 'poi098', 'img', 15 )
+product.addProduct('Maasdam', 'es un queso de origen suizo-holandés',10990, 'poi098', 'img', 15 )
+
+
+//cconsole.log(product.getProducts())
