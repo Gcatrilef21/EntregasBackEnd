@@ -1,26 +1,38 @@
 
-const fs = require ('fs')
+//C:\Users\Gonzalo\OneDrive\Coder\Back-End\Entregas\Entregas
 
-class ProductManager{
-    constructor(){
-        this.path = '../Archivo/products.json'
-    }
+const fs = require('fs')
 
+class ProductManager {
     static id = 0
-    
-    getProducts() { 
-        if(fs.existsSync(this.path)){
+    constructor(filepath) {
+        this.path = filepath
+    }
+    // Obtener Productos
+    getProducts() {
+        if (fs.existsSync(this.path)) {
             return JSON.parse(fs.readFileSync(this.path))
-        }else {
+        } else {
             return []
         }
     }
 
-    addProduct (title, description, price, code, thumbnail, stock) {
+    addProduct(title, description, price, code, thumbnail, stock) {
         let products = this.getProducts()
-
         ProductManager.id++
-        
+
+        //Validar los campos solicitados
+        if (!title || !description || !price || !code || !thumbnail || !stock) {
+            return console.error('Producto no Agregado, completar todos los campos');
+        }
+
+        // Validar si Existe el producto
+        let exist = products.find(prod => prod.code === code)
+        if (exist) {
+            console.error(`Producto ya existe con el codigo ${code} en BBDD`)
+            return
+        }
+
         let newProduct = {
             id: ProductManager.id,
             title,
@@ -30,29 +42,58 @@ class ProductManager{
             thumbnail,
             stock
         }
+        //Agregar el producto
+        products.push(newProduct)
+        //Generar el archivo JSON
+        fs.writeFileSync(this.path, JSON.stringify(products, null, 4))
 
-        let exist = products.find(prod => prod.code === code)
+    }
+    //Buscar Producto por ID
+    getProductById(id) {
+        let products = this.getProducts()
 
-        if(exist){
-            console.error(`Producto ya existe con el codigo ${code} en BBDD`)
+        let idProduct = products.find(prod => prod.id === id)
+        return idProduct
+            ? console.log(idProduct)
+            : console.error('Producto no encontrado ❌')
+
+    }
+
+    updateProduct(id) {
+        let products = this.getProducts()
+
+    }
+    //Eliminar le producto
+    deleteProduct(id) {
+        let products = this.getProducts()
+
+        //Buscar el ID previamente
+        let deltProduct = products.findIndex(prod => prod.id === id)
+        if (deltProduct === -1) {
+            console.log('Producto no encontrado')
             return
         }
-        products.push(newProduct)
-        
-        fs.writeFileSync(this.path, JSON.stringify(products,null,8))
 
-        
+        products.splice(deltProduct,1)
+        fs.writeFileSync(this.path, JSON.stringify(products, null, 4))
+
     }
 }
 
-const product = new ProductManager
+const product = new ProductManager('../Archivo/products.json')
+
+/* product.addProduct('Feta','es un queso Turco',200,'asd123','img',10)
+product.addProduct('Stilton','es un queso Ingles',5990,'qwe123','img',8)
+product.addProduct('Camembert', 'es un queso de origen francés',7557, 'zxc321', 'img', 231 )
+product.addProduct('Maasdam', 'es un queso de origen suizo-holandés',10990, 'poi0981', 'img', 15 ) */
+//product.addProduct('Brie', 'es un queso de origen frances',19990, '', 'img', 15 )    // mensaje de error por falta de campos
+
+//console.log(product.getProducts())
 
 
-product.addProduct('Feta','es un queso Turco',200,'asd123','img',10)
-//product.addProduct('Stilton','es un queso Ingles',5990,'qwe123','img',8)
-product.addProduct('Camembert', 'es un queso de origen francés',7557, 'zxc3211', 'img', 231 )
-product.addProduct('Maasdam', 'es un queso de origen suizo-holandés',10990, 'poi098', 'img', 15 )
-product.addProduct('Maasdam', 'es un queso de origen suizo-holandés',10990, 'poi098', 'img', 15 )
+//product.getProductById(2)
 
 
-//cconsole.log(product.getProducts())
+product.deleteProduct(2)
+
+console.log(product.getProducts())
