@@ -44,10 +44,12 @@ class ProductManager {
         }
         //Agregar el producto
         products.push(newProduct)
+
         //Generar el archivo JSON
         fs.writeFileSync(this.path, JSON.stringify(products, null, 4))
 
     }
+
     //Buscar Producto por ID
     getProductById(id) {
         let products = this.getProducts()
@@ -56,44 +58,59 @@ class ProductManager {
         return idProduct
             ? console.log(idProduct)
             : console.error('Producto no encontrado ❌')
-
     }
 
-    updateProduct(id) {
+    updateProduct(id, object) {
         let products = this.getProducts()
 
+        //Buscar el ID previamente
+        let index = products.findIndex(prod => prod.id === id)
+        console.log(index)
+        if (index === -1) {
+            console.log(`Producto con el ID ${id}no encontrado`)
+            return
+        }
+
+        products[index]={
+            ...products[index],
+            ...object,
+            id
+        }
+        fs.writeFileSync(this.path, JSON.stringify(products, null, 4))
     }
-    //Eliminar le producto
+
+
+    //Elimina el producto
     deleteProduct(id) {
         let products = this.getProducts()
 
         //Buscar el ID previamente
         let deltProduct = products.findIndex(prod => prod.id === id)
         if (deltProduct === -1) {
-            console.log('Producto no encontrado')
+            console.log(`Producto con el ID ${id}no encontrado`)
             return
         }
-
+        // Eliminar el producto y Reescribir el JSON
         products.splice(deltProduct,1)
         fs.writeFileSync(this.path, JSON.stringify(products, null, 4))
-
     }
 }
 
 const product = new ProductManager('../Archivo/products.json')
 
-/* product.addProduct('Feta','es un queso Turco',200,'asd123','img',10)
-product.addProduct('Stilton','es un queso Ingles',5990,'qwe123','img',8)
-product.addProduct('Camembert', 'es un queso de origen francés',7557, 'zxc321', 'img', 231 )
-product.addProduct('Maasdam', 'es un queso de origen suizo-holandés',10990, 'poi0981', 'img', 15 ) */
+//product.addProduct('Feta','es un queso Turco',200,'asd123','img',10)
+//product.addProduct('Shtilton','es un queso Ingles',5990,'qwe123','img',8)
+//product.addProduct('Camembert', 'es un queso de origen francés',7557, 'zxc321', 'img', 231 )
+//product.addProduct('Maasdam', 'es un queso de origen suizo-holandés',10990, 'poi0981', 'img', 15 )
 //product.addProduct('Brie', 'es un queso de origen frances',19990, '', 'img', 15 )    // mensaje de error por falta de campos
 
-//console.log(product.getProducts())
 
 
 //product.getProductById(2)
 
 
-product.deleteProduct(2)
+//product.deleteProduct(2)
+
+product.updateProduct(2,{title:'Stilton'})
 
 console.log(product.getProducts())
